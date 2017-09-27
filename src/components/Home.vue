@@ -8,7 +8,14 @@
     </v-flex>
     <div class="carousel">
       <transition-group tag="ul" class="slide-ul" name="list">
-        <li v-for="(image,index) in urls" :key="index"   @mouseenter='stop' @mouseleave='go' name='item' :class="{'currentLi':index===currentIndex,'nextLi':index===currentIndex+1}" >
+        <li v-for="(image,index) in urls" :key="index"  @mouseenter='stop' @mouseleave='go' name='item'  :class="{'currentLi':index===currentIndex,'lastLi':index===currentIndex-1}" >
+          <a :href="image.link"></a>
+          <img :src="image.url" :alt='image.url'>
+        </li> 
+      </transition-group>
+
+       <!-- <transition-group tag="ul" class="new-ul" name="list2" class={"Animating":anti}>
+        <li v-for="(image,index) in urls" :key="index"   @mouseenter='stop' @mouseleave='go' name='item'>
           <a :href="image.link"></a>
           <img :src="image.url" :alt='image.url'>
         </li>
@@ -16,7 +23,7 @@
       <div class="carouselNum">
         <span v-for="(num,index) in urls.length" :class="{'active':index===currentIndex}" :key="index"  @mousemove="changeIndex(index)"></span>
       </div>
-    </div>
+    </div> -->
     <!-- <div class="css-carousel">
       <transition-group tag="ul"  name="css-list" class="css-slide-ul" :class="{'stopAnima':ifStop}" >
         <li v-for="(item,index) in urls" :key="index" @mouseenter='stopAnima' @mouseleave='goAnima' name='item-css'>
@@ -27,8 +34,9 @@
       </transition-group>
       <div class="css-carouselNum">
         <span v-for="(num,index) in urls.length" :class="{'active':index===currentIndex}" :key="index"  @mousemove="changeIndex(index)"></span>
-      </div> 
-    </div>  -->
+      </div>   -->
+    </div>
+   
   </v-layout>
 </template>
 
@@ -46,21 +54,25 @@ export default {
      currentIndex:0,
      timeOut:'',
      ifStop:false,
+     ani:false,
+   
    }   
  },
  methods:{
    created:function(){
    this.$nextTick(()=>{
      this.timeOut=setInterval(()=>{
-       this.autoPlay()
-     },4000)
-   })
+       this.autoPlay();
+      //  this.ani=!this.ani;
+     },2000)
+   });
  },
  go:function() 
   {
    this.timeOut=setInterval(()=>{
-     this.autoPlay()
-   },4000)
+     this.autoPlay();
+    // this.ani=!this.ani;
+   },6000);
  },
  stop:function(){
    clearInterval(this.timeOut);
@@ -87,11 +99,34 @@ export default {
 }
 </script>
 <style>
+.new-ul{
+  list-style:none; /* 将默认的列表符号去掉 */
+  padding:0; /* 将默认的内边距去掉 */
+  margin:0; /* 将默认的外边距去掉 */
+  width:8000px;
+  height: 100%;
+  position: absolute;
+}
+.new-ul li{
+    display: inline;
+  }
+.Animating{
+ transform: translateX(-1280px);
+}
+@keyframes new-ul {
+  0%{
+    left: 0;
+  }
+  100%{
+    left: -1280px;
+  }
+}
+
 .carousel{
   position: relative;
   min-width: 1280px;
   height: 400px;
-  /* overflow: hidden; */
+  overflow: hidden;
   background-color: #fff;
 }
 .slide-ul{
@@ -101,11 +136,39 @@ export default {
   width:8000px;
   height: 100%;
   position: relative;
-  animation:change 40s linear 2s infinite;
+  
+  /* animation:change 40s linear 2s infinite; */
 }
 .slide-ul li{
-    display: inline;
+    /* display:none; */
+    /* display: inline; */
+    position:absolute;
+    left:0px;
   }
+.currentLi{
+  z-index: 9;
+  animation: current 4s linear 2s;
+}
+.lastLi{
+  z-index: 10;
+  animation:last 4s linear 2s;
+}
+@keyframes current {
+  0%{
+    left:1280px;
+  }
+  100%{
+    left: 0;
+  }
+}
+@keyframes last {
+  0%{
+    left:0px;
+  }
+  100%{
+    left:-1280px;
+  }
+}
 .carouselNum{
   position: absolute;
   z-index: 3;
@@ -203,7 +266,7 @@ span{
   width:8000px;
   height: 100%;
   position: relative;
-  animation:change 40s linear 2s infinite;
+  /* animation:change 40s linear 2s infinite; */
 }
 /* .slide-out{
   position: relative;
