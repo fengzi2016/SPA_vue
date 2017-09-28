@@ -8,7 +8,7 @@
     </v-flex>
     <div class="carousel">
       <transition-group tag="ul" class="slide-ul" name="list">
-        <li v-for="(image,index) in urls" :key="index"  @mouseenter='stop' @mouseleave='go' name='item'  :class="{'currentLi':index===currentIndex,'lastLi':index===currentIndex-1}" >
+        <li v-for="(image,index) in urls" :key="index"  @mouseenter='stop' @mouseleave='go' name='item'  :class="{'currentLi':index===currentIndex,'lastLi':index===lastIndex}"  >
           <a :href="image.link"></a>
           <img :src="image.url" :alt='image.url'>
         </li> 
@@ -55,7 +55,7 @@ export default {
      timeOut:'',
      ifStop:false,
      ani:false,
-   
+     lastIndex:''
    }   
  },
  methods:{
@@ -64,12 +64,11 @@ export default {
      this.timeOut=setInterval(()=>{
        this.autoPlay();
       //  this.ani=!this.ani;
-     },2000)
+     },0)
    });
  },
  go:function() 
-  {
-   this.timeOut=setInterval(()=>{
+  {this.timeOut=setInterval(()=>{
      this.autoPlay();
     // this.ani=!this.ani;
    },6000);
@@ -83,8 +82,10 @@ export default {
  },
  autoPlay:function(){
    this.currentIndex++;
+   this.lastIndex=this.currentIndex-1;
    if(this.currentIndex>this.urls.length-1){
      this.currentIndex=0;
+     this.lastIndex=this.urls.length-1;
    }
  },
     stopAnima:function(){
